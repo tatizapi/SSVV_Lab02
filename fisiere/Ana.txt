@@ -1,0 +1,18 @@
+
+Tema: 100
+Nota: 10.0
+Predata in saptamana: 4
+Deadline: 4
+Feedback: ffff
+
+Tema: 100
+Nota: 7.5
+Predata in saptamana: 5
+Deadline: 4
+Feedback: fe
+
+Tema: 100
+Nota: 9.0
+Predata in saptamana: 4
+Deadline: 4
+Feedback: buna
