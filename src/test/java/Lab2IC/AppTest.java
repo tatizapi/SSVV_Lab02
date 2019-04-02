@@ -169,13 +169,6 @@ public class AppTest
     }
 
     @Test(expected = ValidationException.class)
-    public void addStudentEmptyStringIdShouldRaiseException()
-    {
-        Student student = new Student("", "TestName", 1, "student@email.com");
-        service.addStudent(student);
-    }
-
-    @Test(expected = ValidationException.class)
     public void addStudentTooLongIdShouldRaiseException()
     {
         Student student = new Student(veryLongString, "TestName", 1, "student@email.com");
@@ -189,13 +182,6 @@ public class AppTest
     public void addStudentNullNameShouldRaiseException()
     {
         Student student = new Student("1", null, 1, "student@email.com");
-        service.addStudent(student);
-    }
-
-    @Test(expected = ValidationException.class)
-    public void addStudentEmptyStringNameShouldRaiseException()
-    {
-        Student student = new Student("1", "", 1, "student@email.com");
         service.addStudent(student);
     }
 
