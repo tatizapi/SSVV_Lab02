@@ -9,8 +9,11 @@ import Lab2IC.validation.NotaValidator;
 import Lab2IC.validation.StudentValidator;
 import Lab2IC.validation.TemaValidator;
 import Lab2IC.validation.ValidationException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +22,8 @@ import static org.junit.Assert.*;
  */
 public class AppTest 
 {
-    Service service;
+    private Service service;
+    private String veryLongString;
 
     /**
      * Rigorous Test :-)
@@ -49,6 +53,9 @@ public class AppTest
 
     @Before
     public void setUp() {
+
+        // Set up the service
+
         String filenameStudent = "fisiere/Studenti.xml";
         String filenameTema = "fisiere/Teme.xml";
         String filenameNota = "fisiere/Note.xml";
@@ -62,6 +69,32 @@ public class AppTest
         TemaValidator temaValidator = new TemaValidator();
 
         service = new Service(studentXMLRepository, studentValidator, temaXMLRepository, temaValidator, notaXMLRepository, notaValidator);
+
+
+        // Set up the very long array
+        char[] longArray = new char[100000000];
+        for (int i = 0; i < longArray.length; i++)
+        {
+            longArray[i] = 'a';
+        }
+        veryLongString = Arrays.toString(longArray);
+
+
+        // Clean the files before tests
+        Iterable<Student> students = service.getAllStudenti();
+        for (Student student : students) {
+            service.deleteStudent(student.getID());
+        }
+    }
+
+    @After
+    public void tearDown()
+    {
+        // Clean the files after tests
+        Iterable<Student> students = service.getAllStudenti();
+        for (Student student : students) {
+            service.deleteStudent(student.getID());
+        }
     }
 
     // --- EC test cases ---
@@ -119,6 +152,105 @@ public class AppTest
     @Test(expected = ValidationException.class)
     public void addStudentEmailRespectsFormatShouldRaiseException() {
         Student student = new Student("id1", "name", 10, "name");
+        service.addStudent(student);
+    }
+
+
+
+    // --- BVE Test Cases ---
+
+    // Tests on id
+
+    @Test(expected = ValidationException.class)
+    public void addStudentNullIdShouldRaiseException()
+    {
+        Student student = new Student(null, "TestName", 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentEmptyStringIdShouldRaiseException()
+    {
+        Student student = new Student("", "TestName", 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentTooLongIdShouldRaiseException()
+    {
+        Student student = new Student(veryLongString, "TestName", 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+
+    // Tests on Name
+
+    @Test(expected = ValidationException.class)
+    public void addStudentNullNameShouldRaiseException()
+    {
+        Student student = new Student("1", null, 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentEmptyStringNameShouldRaiseException()
+    {
+        Student student = new Student("1", "", 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentTooLongNameShouldRaiseException()
+    {
+        Student student = new Student("1", veryLongString, 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+
+    // Tests on Email
+
+    @Test(expected = ValidationException.class)
+    public void addStudentNullEmailShouldRaiseException()
+    {
+        Student student = new Student("1", "TestName", 1, null);
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentEmptyStringEmailShouldRaiseException()
+    {
+        Student student = new Student("1", "TestName", 1, "");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentTooLongEmailShouldRaiseException()
+    {
+        Student student = new Student("1", "TestName", 1, veryLongString);
+        service.addStudent(student);
+    }
+
+
+    // Tests on Group
+
+    @Test
+    public void addStudentNaturalNumberAsGroupShouldNotRaiseException()
+    {
+        Student student = new Student("1", "TestName", 1, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test
+    public void addStudentMAXINTAsGroupShouldNotRaiseException()
+    {
+        Student student = new Student("1", "TestName", Integer.MAX_VALUE, "student@email.com");
+        service.addStudent(student);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void addStudentMAXINTPlusOneAsGroupShouldRaiseException()
+    {
+        Student student = new Student("1", "TestName", Integer.MAX_VALUE + 1, "student@email.com");
         service.addStudent(student);
     }
 
