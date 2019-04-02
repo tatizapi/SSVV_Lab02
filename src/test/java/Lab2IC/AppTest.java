@@ -8,6 +8,7 @@ import Lab2IC.service.Service;
 import Lab2IC.validation.NotaValidator;
 import Lab2IC.validation.StudentValidator;
 import Lab2IC.validation.TemaValidator;
+import Lab2IC.validation.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +20,6 @@ import static org.junit.Assert.*;
 public class AppTest 
 {
     Service service;
-    Student student;
 
     /**
      * Rigorous Test :-)
@@ -33,7 +33,7 @@ public class AppTest
     @Test
     public void addStudentShouldReturnNullOnSuccess() {
         service.deleteStudent("id1");
-        student = new Student("id1", "Nume", 999, "email@something.com");
+        Student student = new Student("id1", "Nume", 999, "email@something.com");
 
         assertNull(service.addStudent(student));
     }
@@ -41,10 +41,10 @@ public class AppTest
     @Test
     public void addStudentShouldReturnStudentOnFail() {
         service.deleteStudent("id1");
-        Student student1 = new Student("id1", "Nume", 999, "email@something.com");
+        Student student = new Student("id1", "Nume", 999, "email@something.com");
 
-        assertNull(service.addStudent(student1));
-        assertNotNull(service.addStudent(student1));
+        assertNull(service.addStudent(student));
+        assertNotNull(service.addStudent(student));
     }
 
     @Before
@@ -62,5 +62,12 @@ public class AppTest
         TemaValidator temaValidator = new TemaValidator();
 
         service = new Service(studentXMLRepository, studentValidator, temaXMLRepository, temaValidator, notaXMLRepository, notaValidator);
+    }
+
+    // --- EC test cases ---
+    @Test(expected = ValidationException.class)
+    public void addStudentIdEmpty() {
+        Student student = new Student("", "Name", 10, "name@email.com");
+        service.addStudent(student);
     }
 }
