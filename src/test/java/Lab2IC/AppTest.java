@@ -1,6 +1,7 @@
 package Lab2IC;
 
 import Lab2IC.domain.Student;
+import Lab2IC.domain.Tema;
 import Lab2IC.repository.NotaXMLRepo;
 import Lab2IC.repository.StudentXMLRepo;
 import Lab2IC.repository.TemaXMLRepo;
@@ -24,6 +25,7 @@ public class AppTest
 {
     private Service service;
     private String veryLongString;
+    TemaXMLRepo temaXMLRepository;
 
     /**
      * Rigorous Test :-)
@@ -61,7 +63,7 @@ public class AppTest
         String filenameNota = "fisiere/Note.xml";
 
         StudentXMLRepo studentXMLRepository = new StudentXMLRepo(filenameStudent);
-        TemaXMLRepo temaXMLRepository = new TemaXMLRepo(filenameTema);
+        temaXMLRepository = new TemaXMLRepo(filenameTema);
         NotaXMLRepo notaXMLRepository = new NotaXMLRepo(filenameNota);
 
         NotaValidator notaValidator = new NotaValidator(studentXMLRepository, temaXMLRepository);
@@ -240,4 +242,26 @@ public class AppTest
         service.addStudent(student);
     }
 
+
+    // --- WHITE BOX TESTING ---
+    @Test
+    public void addAssignmentInRepoShouldReturnNullOnSuccess() {
+        temaXMLRepository.delete("100");
+
+        Tema assignment = new Tema("100", "TestDescription", 3, 1);
+        assertNull(temaXMLRepository.save(assignment));
+
+        temaXMLRepository.delete("100");
+    }
+
+    @Test
+    public void addAssignmentInRepoShouldReturnEntityOnFail() {
+        temaXMLRepository.delete("100");
+
+        Tema assignment = new Tema("100", "TestDescription", 3, 1);
+        temaXMLRepository.save(assignment);
+        assertEquals(temaXMLRepository.save(assignment).getID(), assignment.getID());
+
+        temaXMLRepository.delete("100");
+    }
 }
