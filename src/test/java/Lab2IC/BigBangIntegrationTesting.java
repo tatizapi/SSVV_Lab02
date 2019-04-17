@@ -52,11 +52,24 @@ public class BigBangIntegrationTesting {
 
 
     // Add Student Functionality
+    @Test
+    public void canAddStudent() {
+        service.deleteStudent("std1");
+        Student student = new Student("std1", "TestStudent", 932, "teststudent@email.com");
+        service.addStudent(student);
 
-
+        assertEquals(service.findStudent("std1").getNume(), "TestStudent");
+    }
 
     // Add Assignment Functionality
+    @Test
+    public void canAddAssignment() {
+        service.deleteTema("asgn1");
+        Tema assignment = new Tema("asgn1", "TestAssignment", 3, 1);
+        service.addTema(assignment);
 
+        assertEquals(service.findTema("asgn1").getDescriere(), "TestAssignment");
+    }
 
 
     // Add Grade Functionality

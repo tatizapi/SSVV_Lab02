@@ -243,7 +243,7 @@ public class AppTest
     }
 
 
-    // --- WHITE BOX TESTING ---
+    // --- WHITE BOX TESTING --- (lab3 IC)
     @Test
     public void addAssignmentInRepoShouldReturnNullOnSuccess() {
         temaXMLRepository.delete("100");
