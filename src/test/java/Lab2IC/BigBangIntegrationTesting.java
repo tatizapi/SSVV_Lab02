@@ -1,5 +1,6 @@
 package Lab2IC;
 
+import Lab2IC.domain.Nota;
 import Lab2IC.domain.Student;
 import Lab2IC.domain.Tema;
 import Lab2IC.repository.NotaXMLRepo;
@@ -14,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -73,10 +75,61 @@ public class BigBangIntegrationTesting {
 
 
     // Add Grade Functionality
+    @Test
+    public void canAddGrade()
+    {
+        Student student = new Student("abcdefg", "Abcdefg", 100, "email@mail.com");
+        studentXMLRepository.save(student);
+        Tema assignment = new Tema("tema0001", "descr", 9, 8);
+        temaXMLRepository.save(assignment);
 
+        Nota grade = new Nota("nota0001", "abcdefg", "tema0001", 10, LocalDate.of(2019, 04, 17));
+        Nota savedGrade = notaXMLRepository.save(grade);
+
+        assertNull(savedGrade);  // Save was successful
+        assertEquals(notaXMLRepository.findOne("nota0001"), grade);  // Can find the grade
+
+        // Clean Up
+        studentXMLRepository.delete("abcdefg");
+        temaXMLRepository.delete("tema0001");
+        notaXMLRepository.delete("nota0001");
+    }
 
 
     // Integrate All Functionalities
+    @Test
+    public void canIntegrateAddStudentAssignmentAndGrade()
+    {
+        // Student
+        Student student = new Student("abcdefg", "Abcdefg", 100, "email@mail.com");
+        Student savedStudent = studentXMLRepository.save(student);
+
+        assertNull(savedStudent);  // Save was successful
+        assertEquals(studentXMLRepository.findOne("abcdefg"), student);  // Can find the student
+
+        // Assignment
+        Tema assignment = new Tema("tema0001", "descr", 9, 8);
+        Tema savedAssignment = temaXMLRepository.save(assignment);
+
+        assertNull(savedAssignment);  // Save was successful
+        assertEquals(temaXMLRepository.findOne("tema0001"), assignment);  // Can find the assignment
+
+        // Grade
+        Nota grade = new Nota("nota0001", "abcdefg", "tema0001", 10, LocalDate.of(2019, 04, 17));
+        Nota savedGrade = notaXMLRepository.save(grade);
+
+        assertNull(savedGrade);  // Save was successful
+        assertEquals(notaXMLRepository.findOne("nota0001"), grade);  // Can find the grade
+
+        // All
+        assertEquals(grade.getIdStudent(), student.getID());
+        assertEquals(grade.getIdTema(), assignment.getID());
+
+        // Clean Up
+        studentXMLRepository.delete("abcdefg");
+        temaXMLRepository.delete("tema0001");
+        notaXMLRepository.delete("nota0001");
+    }
 
 
 
